@@ -5,31 +5,17 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/items', methods=['GET'])
-def get_items():
-    db_conn = None
-    cursor = None
+@app.route("/api")
+def home():
     try:
-        db_conn = mysql.connector.connect(
-            host="database",  # The MySQL service name from Docker Compose
-            user="root",
-            password="rootpassword",
-            database="shopping_db"
-        )
-        cursor = db_conn.cursor(dictionary=True)
-        cursor.execute("SELECT name, price FROM items")
-        items = cursor.fetchall()
-
-        return jsonify({"items": items})
-
+        db = pymysql.connect(host="db", user="root", password="root", database="testdb")
+        cursor = db.cursor()
+        cursor.execute("SELECT message FROM messages LIMIT 1;")
+        message = cursor.fetchone()
+        db.close()
+        return message[0] if message else "No data found!"
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return str(e)
 
-    finally:
-        if cursor:
-            cursor.close()
-        if db_conn and db_conn.is_connected():
-            db_conn.close()
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
