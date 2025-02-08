@@ -1,4 +1,4 @@
-fetch('http://backend:5000/items')
+fetch('http://backend:5000/api')
     .then(response => response.json())
     .then(data => {
         const itemsTableBody = document.getElementById('items-table').getElementsByTagName('tbody')[0];
