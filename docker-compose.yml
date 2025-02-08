@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  database:
+  db:
     build: ./database
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
@@ -15,14 +15,14 @@ services:
   backend:
     build: ./backend
     environment:
-      DB_HOST: database
+      DB_HOST: db
       DB_USER: root
       DB_PASSWORD: rootpassword
       DB_NAME: testdb
     ports:
       - "5000:5000"
     depends_on:
-      - database
+      - db
 
   frontend:
     build: ./frontend
