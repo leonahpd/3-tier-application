@@ -17,7 +17,7 @@ services:
     environment:
       DB_HOST: db
       DB_USER: root
-      DB_PASSWORD: rootpassword
+      DB_PASSWORD: root
       DB_NAME: testdb
     ports:
       - "5000:5000"
@@ -30,3 +30,7 @@ services:
       - "8080:80"
     depends_on:
       - backend
+volumes:
+  db-data:
+
+
