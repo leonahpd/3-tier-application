@@ -18,23 +18,40 @@ def get_db_connection():
         database=os.getenv('DB_NAME', 'testdb')
     )
 
+# Get the current message
 @app.route('/api', methods=['GET'])
-def get_api():
-    """API endpoint to fetch a message from the database."""
+def get_message():
     try:
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
-        
-        cursor.execute("SELECT message FROM messages LIMIT 1;")  
-        message = cursor.fetchall()
-        
+        cursor.execute("SELECT message FROM messages LIMIT 1;")
+        message = cursor.fetchone()
         cursor.close()
         connection.close()
-        
-        return jsonify(message[0]) if message else jsonify({"message": "No data found!"})
-    
+        return jsonify({"message": message['message']}) if message else jsonify({"message": "No data found"})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500  # Return JSON error response with HTTP 500 status
+        return jsonify({"error": str(e)}), 500
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)  # Debug mode for development
+# Update the message
+@app.route('/api/update', methods=['POST'])
+def update_message():
+    try:
+        data = request.get_json()
+        new_message = data.get('message')
+
+        if not new_message:
+            return jsonify({"error": "Message cannot be empty"}), 400
+
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute("UPDATE messages SET message = %s WHERE id = 1;", (new_message,))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return jsonify({"message": "Message updated successfully"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
