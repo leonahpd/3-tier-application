@@ -18,4 +18,3 @@ fetch('http://backend:5000/api')
         document.getElementById('items-table').getElementsByTagName('tbody')[0].appendChild(row);
     });
 
-    });
