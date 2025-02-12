@@ -1,5 +1,5 @@
 // Fetch the existing message
-fetch('http://backend:5000/api')
+fetch('http://localhost:5000/api')
     .then(response => response.json())
     .then(data => {
         console.log("Backend Data:", data); // Debugging
